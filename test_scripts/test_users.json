@@ -1,42 +1,42 @@
 [
     {
-        "name": "Annette Lee",
+        "name": "AnnetteLee",
         "password": "password123"
     },
     {
-        "name": "Robyn Buckley",
+        "name": "RobynBuckley",
         "password": "spongebob"
     },
     {
-        "name": "Laura Rios",
+        "name": "LauraRios",
         "password": "alejandro"
     },
     {
-        "name": "Roberto Murphy",
+        "name": "RobertoMurphy",
         "password": "gemini"
     },
     {
-        "name": "Michelle Robbins",
+        "name": "MichelleRobbins",
         "password": "cameron"
     },
     {
-        "name": "Frances Rodriguez",
+        "name": "Frances_Rodriguez",
         "password": "midnight"
     },
     {
-        "name": "Joan Roman",
+        "name": "Joan_Roman",
         "password": "333333"
     },
     {
-        "name": "Christopher Herrera",
+        "name": "Christopher_Herrera",
         "password": "12345678910"
     },
     {
-        "name": "Jason Griffith",
+        "name": "Jason_Griffith",
         "password": "london"
     },
     {
-        "name": "Alexis Mccormick",
+        "name": "Alexis_Mccormick",
         "password": "muffin"
     }
 ]

@@ -26,9 +26,9 @@ class User:
         self.logger.debug(f"Inserting new user: {self.name}")
 
         self.cursor.execute(f"INSERT INTO users "
-                       f"(name, password, salt, test_only) "
-                       f"VALUES "
-                       f"('{self.name}', '{self.password}', '{self.salt}', {self.test_only})")
+                            f"(name, password, salt, test_only) "
+                            f"VALUES "
+                            f"('{self.name}', '{self.password}', '{self.salt}', {self.test_only})")
 
     def select(self):
         """

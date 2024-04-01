@@ -14,7 +14,6 @@ logger.setLevel(logging.DEBUG)
 # Set the connection to the database
 connection = connection.Connection()
 
-
 def main():
     if len(sys.argv) <= 1 or len(sys.argv) > 2:
         usage()
@@ -34,6 +33,10 @@ def main():
         user.set_cursor(connection.get_connection_cursor())
         verified_user = verify(user)
 
+    #
+    # End of command line argument parsing
+    #
+    print('enrolled', enrolled_user)
     if enrolled_user[0] == 0:
         print(f"{enrolled_user[2].name} has not been enrolled due to error {enrolled_user[1]}")
     else:
@@ -49,4 +52,6 @@ def usage():
 
 
 if __name__ == "__main__":
+    start_time = time.time()
     main()
+    logger.debug(f"Time taken: {time.time() - start_time}")

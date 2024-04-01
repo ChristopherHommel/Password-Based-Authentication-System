@@ -29,6 +29,7 @@ class UserNameVerifier:
         self.execute()
 
     def is_validated(self):
+        print("username vlaidation ", self.validated)
         return self.validated
 
     def execute(self):
@@ -69,6 +70,7 @@ class UserNameVerifier:
         if len(self.user.name) < self.MIN_LENGTH:
             self.validated[0] = 0
             self.validated[1] = "username is too short."
+
         elif len(self.user.name) > self.MAX_LENGTH:
             self.validated[0] = 0
             self.validated[1] = "username is too long."
