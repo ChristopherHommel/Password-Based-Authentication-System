@@ -21,6 +21,8 @@ class PasswordBuilder:
     MATCH_NUMBERS = re.compile(r'[0-9]')
     MATCH_NON_REGULAR = re.compile(r'[^a-zA-Z0-9]')
 
+
+
     def __init__(self, user):
         self.user = user
         # To keep track of the current in use User object
@@ -32,14 +34,14 @@ class PasswordBuilder:
         return self.validated
 
     def execute(self):
-        self.check_against_weak_password()
-        self.check_against_breach_password()
-        self.check_min_and_max_length_password()
-        self.check_min_3_repeated_characters()
-        self.check_password_does_not_equal_username()
-        self.check_user_name_in_password()
-        self.find_sequential_characters()
-        self.match_3_of_4_match_cases()
+        #self.check_against_weak_password()
+        #self.check_against_breach_password()
+        #self.check_min_and_max_length_password()
+        #self.check_min_3_repeated_characters()
+        #self.check_password_does_not_equal_username()
+        #self.check_user_name_in_password()
+        #self.find_sequential_characters()
+        #self.match_3_of_4_match_cases()
 
         return self.user
 
@@ -164,3 +166,4 @@ class PasswordBuilder:
             self.validated[0] = 0
             self.validated[1] = ("password does not match 3 or more combinations of lowercase,"
                                  " uppercase number and special characters.")
+

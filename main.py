@@ -25,11 +25,13 @@ def main():
 
     if sys.argv[1] == "-e" or sys.argv[1] == "--enrolment":
         user = steps()
+        user.set_connection(connection.get_connection())
         user.set_cursor(connection.get_connection_cursor())
         enrolled_user = enrol(user)
 
     if sys.argv[1] == "-v" or sys.argv[1] == "--verification":
         user = steps()
+        user.set_connection(connection.get_connection())
         user.set_cursor(connection.get_connection_cursor())
         verified_user = verify(user)
 

@@ -25,12 +25,21 @@ def insert_test_users(connection):
             file.close()
 
             for user in test_users:
-                new_user = TestUser(user['name'], user['password'], cursor)
+                new_user = TestUser(user['name'], user['password'], cursor, connection.get_connection())
+
                 logger.debug(f"Inserting new test user: {new_user}")
 
                 new_user.insert()
 
                 connection.get_connection().commit()
+
+        #
+        # Select all from database
+        #
+        cursor.execute("SELECT * FROM users")
+        users = cursor.fetchall()
+        for user in users:
+            logger.debug(f"User: {user}")
 
         cursor.close()
 

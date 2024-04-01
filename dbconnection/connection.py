@@ -55,68 +55,6 @@ class Connection:
         self.connection.close()
         self.logger.debug("Connection closed")
 
-    def rebuild_table(self):
-        """
-        Rebuilds the table
-        :return: True if successful, False otherwise
-        """
-        try:
-            cursor = self.connection.cursor()
-            cursor.execute("DROP TABLE IF EXISTS users")
-            cursor.execute("CREATE TABLE IF NOT EXISTS users (" 
-                           "id INT AUTO_INCREMENT PRIMARY KEY, "
-                           "name VARCHAR(255) NOT NULL, "
-                           "password VARCHAR(255) NOT NULL, "
-                           "salt VARCHAR(255) NOT NULL, "
-                           "test_only BOOLEAN NOT NULL)")
-            cursor.close()
-            return True
-        except sqlite3.Error as database_error:
-            self.logger.debug(f"Error rebuilding table: {database_error}")
-            return False
-
-    def rebuild_schema(self):
-        """
-        Rebuilds the schema
-        :return: True if successful, False otherwise
-        """
-        try:
-            cursor = self.connection.cursor()
-            cursor.execute("DROP SCHEMA IF EXISTS " + self.credentials.name)
-            cursor.execute("CREATE SCHEMA " + self.credentials.name)
-            cursor.close()
-            return True
-        except sqlite3.Error as database_error:
-            self.logger.debug(f"Error rebuilding schema: {database_error}")
-            return False
-
-    def drop_schema(self):
-        """
-        Drops the schema
-        :return: True if successful, False otherwise
-        """
-        try:
-            cursor = self.connection.cursor()
-            cursor.execute("DROP SCHEMA IF EXISTS " + self.credentials.name)
-            cursor.close()
-            return True
-        except sqlite3.Error as database_error:
-            self.logger.debug(f"Error dropping schema: {database_error}")
-            return False
-
-    def drop_database(self):
-        """
-        Drops the database
-        :return: True if successful, False otherwise
-        """
-        try:
-            cursor = self.connection.cursor()
-            cursor.execute("DROP DATABASE IF EXISTS " + self.credentials.name)
-            cursor.close()
-            return True
-        except sqlite3.Error as database_error:
-            self.logger.debug(f"Error dropping database: {database_error}")
-            return False
 
     def select(self, query):
         """
@@ -169,4 +107,4 @@ class Connection:
         Print out the database we are working with
         :return: string representation of the object
         """
-        return f"Connection object to {self.credentials.name} database"
+        return f"Connection object to database"

@@ -1,4 +1,6 @@
 import logging
+import os
+import sqlite3
 
 
 class User:
@@ -9,42 +11,47 @@ class User:
     logging.basicConfig()
     logger.setLevel(logging.DEBUG)
 
-    salt = '123'
+    salt = os.urandom(16)
     test_only = False
 
-    def __init__(self, name, password, cursor):
+    def __init__(self, name, password, cursor, connection):
         self.name = name
         self.password = password
         self.cursor = cursor
+        self.connection = connection
 
     def insert(self):
         """
-        Insert the user into the database
-        :param cursor: cursor to the database
-        :return:
+        Insert the user into the database safely using parameterized queries.
         """
         self.logger.debug(f"Inserting new user: {self.name}")
 
-        self.cursor.execute(f"INSERT INTO users "
-                            f"(name, password, salt, test_only) "
-                            f"VALUES "
-                            f"('{self.name}', '{self.password}', '{self.salt}', {self.test_only})")
+        try:
+            self.cursor.execute("INSERT INTO users (name, password, salt, test_only) VALUES (?, ?, ?, ?)",
+                                (self.name, self.password, self.salt, self.test_only))
+
+            self.connection.commit()
+
+        except sqlite3.Error as e:
+            self.logger.error(f"Database error: {e}")
 
     def select(self):
         """
-        Select the user from the database
-        :param cursor: cursor to the database
-        :return: user if a user is found, False otherwise
+        Select the user from the database safely using parameterized queries.
         """
-        self.logger.debug(f"Selecting new user: {self.name}")
+        self.logger.debug(f"Selecting user: {self.name}")
 
-        self.cursor.execute(f"SELECT * FROM users WHERE name = '{self.name}'")
-        user = self.cursor.fetchone()
+        try:
+            self.cursor.execute("SELECT * FROM users WHERE name = ?", (self.name,))
+            user = self.cursor.fetchone()
 
-        if user:
-            return user
+            if user:
+                return user
 
-        else:
+            return False
+
+        except sqlite3.Error as e:
+            self.logger.error(f"Database error: {e}")
             return False
 
     def __repr__(self):
@@ -65,6 +72,14 @@ class User:
         :return: None
         """
         self.password = password
+
+    def set_connection(self, connection):
+        """
+        Set the connection of the user
+        :param connection: connection of the user
+        :return: None
+        """
+        self.connection = connection
 
     def set_cursor(self, cursor):
         """

@@ -11,7 +11,7 @@ def steps():
     :return: A new User object
     """
 
-    user = User(None, None, None)
+    user = User(None, None, None, None)
 
     user.set_name(input("Enter your username: "))
     user.set_password(input("Enter your password: "))
