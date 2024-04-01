@@ -1,4 +1,5 @@
 import os
+import re
 
 
 class PasswordBuilder:
@@ -14,6 +15,11 @@ class PasswordBuilder:
 
     WEAK_PASSWORD_FILE = os.path.join(os.path.dirname(os.path.realpath(__file__)), "weakpasswords.txt")
     BREACHED_PASSWORD_FILE = os.path.join(os.path.dirname(os.path.realpath(__file__)), "breachedpasswords.txt")
+
+    MATCH_UPPERASE = re.compile(r'[A-Z]')
+    MATCH_LOWERCASE = re.compile(r'[a-z]')
+    MATCH_NUMBERS = re.compile(r'[0-9]')
+    MATCH_NON_REGULAR = re.compile(r'[^a-zA-Z0-9]')
 
     def __init__(self, user):
         self.user = user
@@ -33,6 +39,7 @@ class PasswordBuilder:
         self.check_password_does_not_equal_username()
         self.check_user_name_in_password()
         self.find_sequential_characters()
+        self.match_3_of_4_match_cases()
 
         return self.user
 
@@ -137,4 +144,23 @@ class PasswordBuilder:
                                      f"{self.user.password[i + 2]}).")
                 return
 
+    def match_3_of_4_match_cases(self):
+        """
+        Check if the password has at least 3 of the 4 match cases.
+        Updates self.validated with the validation result.
+        """
+        match_cases = 0
 
+        if self.MATCH_UPPERASE.search(self.user.password):
+            match_cases += 1
+        if self.MATCH_LOWERCASE.search(self.user.password):
+            match_cases += 1
+        if self.MATCH_NUMBERS.search(self.user.password):
+            match_cases += 1
+        if self.MATCH_NON_REGULAR.search(self.user.password):
+            match_cases += 1
+
+        if match_cases < 3:
+            self.validated[0] = 0
+            self.validated[1] = ("password does not match 3 or more combinations of lowercase,"
+                                 " uppercase number and special characters.")
