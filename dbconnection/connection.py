@@ -1,9 +1,6 @@
-import json
-import mysql.connector
+import sqlite3
 import logging
 import os
-
-from dbconnection.credentials import Credentials
 
 
 class Connection:
@@ -15,55 +12,32 @@ class Connection:
     logger.setLevel(logging.DEBUG)
 
     real_path = os.path.realpath(__file__)
-    DATABASE_CONNECTION_FILE = os.path.join(os.path.dirname(real_path), "dbconfig.json")
+    DATABASE_CONNECTION_FILE = os.path.join(os.path.dirname(real_path), "database.db")
 
     credentials = None
     connection = None
 
     def __init__(self):
-        self.logger.info("Connecting to the database")
+        self.logger.info("Connecting to the SQLite database")
 
         try:
-            with open(self.DATABASE_CONNECTION_FILE) as file:
-                load_credentials = json.load(file)
+            self.connection = sqlite3.connect(self.DATABASE_CONNECTION_FILE)
+            self.logger.debug("Successfully connected to SQLite")
 
-                self.credentials = Credentials(
-                    load_credentials['dbHost'],
-                    load_credentials['bdName'],
-                    load_credentials['dbUserName'],
-                    load_credentials['dbPassword'],
-                    load_credentials['dbPort'])
-
-            file.close()
-
-        except FileNotFoundError:
-            self.logger.debug(f"{self.DATABASE_CONNECTION_FILE} not found, exiting")
-            return
-
-        try:
-            self.connection = mysql.connector.connect(
-                host=self.credentials.host,
-                user=self.credentials.username,
-                password=self.credentials.password,
-                database=self.credentials.name,
-                port=self.credentials.port
-            )
-
-            # Build a new table users if it does not exist with the columns, name, password, salt, test_only
             cursor = self.connection.cursor()
 
-            cursor.execute("CREATE TABLE IF NOT EXISTS users (" 
-                           "id INT AUTO_INCREMENT PRIMARY KEY, "
-                           "name VARCHAR(255) NOT NULL, "
-                           "password VARCHAR(255) NOT NULL, "
-                           "salt VARCHAR(255) NOT NULL, "
-                           "test_only BOOLEAN NOT NULL)")
+            cursor.execute("""CREATE TABLE IF NOT EXISTS users (
+                              id INTEGER PRIMARY KEY AUTOINCREMENT,
+                              name TEXT NOT NULL,
+                              password TEXT NOT NULL,
+                              salt TEXT NOT NULL,
+                              test_only BOOLEAN NOT NULL)""")
 
+            self.connection.commit()
             cursor.close()
 
-            logging.debug(f"Finished initializing database")
-        except mysql.connector.Error as database_error:
-            self.logger.debug(f"Error connecting to database: {database_error}")
+        except sqlite3.Error as database_error:
+            self.logger.debug(f"Error connecting to SQLite database: {database_error}")
             return
 
     def get_connection(self):
@@ -97,7 +71,7 @@ class Connection:
                            "test_only BOOLEAN NOT NULL)")
             cursor.close()
             return True
-        except mysql.connector.Error as database_error:
+        except sqlite3.Error as database_error:
             self.logger.debug(f"Error rebuilding table: {database_error}")
             return False
 
@@ -112,7 +86,7 @@ class Connection:
             cursor.execute("CREATE SCHEMA " + self.credentials.name)
             cursor.close()
             return True
-        except mysql.connector.Error as database_error:
+        except sqlite3.Error as database_error:
             self.logger.debug(f"Error rebuilding schema: {database_error}")
             return False
 
@@ -126,7 +100,7 @@ class Connection:
             cursor.execute("DROP SCHEMA IF EXISTS " + self.credentials.name)
             cursor.close()
             return True
-        except mysql.connector.Error as database_error:
+        except sqlite3.Error as database_error:
             self.logger.debug(f"Error dropping schema: {database_error}")
             return False
 
@@ -140,7 +114,7 @@ class Connection:
             cursor.execute("DROP DATABASE IF EXISTS " + self.credentials.name)
             cursor.close()
             return True
-        except mysql.connector.Error as database_error:
+        except sqlite3.Error as database_error:
             self.logger.debug(f"Error dropping database: {database_error}")
             return False
 
@@ -159,7 +133,7 @@ class Connection:
             result = cursor.fetchall()
             cursor.close()
             return result
-        except mysql.connector.Error as database_error:
+        except sqlite3.Error as database_error:
             self.logger.debug(f"Error selecting data: {database_error}")
             return False
 
@@ -179,7 +153,7 @@ class Connection:
             cursor.close()
             return True
 
-        except mysql.connector.Error as database_error:
+        except sqlite3.Error as database_error:
             self.logger.debug(f"Error inserting data: {database_error}")
             return False
 
