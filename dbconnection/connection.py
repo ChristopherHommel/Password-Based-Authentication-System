@@ -49,14 +49,17 @@ class Connection:
                 port=self.credentials.port,
                 raise_on_warnings=True
             )
+
             # Build a new table users if it does not exist with the columns, name, password, salt, test_only
             cursor = self.connection.cursor()
+
             cursor.execute("CREATE TABLE IF NOT EXISTS users (" 
                            "id INT AUTO_INCREMENT PRIMARY KEY, "
                            "name VARCHAR(255) NOT NULL, "
                            "password VARCHAR(255) NOT NULL, "
                            "salt VARCHAR(255) NOT NULL, "
                            "test_only BOOLEAN NOT NULL)")
+
             cursor.close()
 
             logging.debug(f"Finished initializing database")
@@ -78,6 +81,55 @@ class Connection:
         """
         self.connection.close()
         self.logger.debug("Connection closed")
+
+    def rebuild_table(self):
+        """
+        Rebuilds the table
+        :return: True if successful, False otherwise
+        """
+        try:
+            cursor = self.connection.cursor()
+            cursor.execute("DROP TABLE IF EXISTS users")
+            cursor.execute("CREATE TABLE IF NOT EXISTS users (" 
+                           "id INT AUTO_INCREMENT PRIMARY KEY, "
+                           "name VARCHAR(255) NOT NULL, "
+                           "password VARCHAR(255) NOT NULL, "
+                           "salt VARCHAR(255) NOT NULL, "
+                           "test_only BOOLEAN NOT NULL)")
+            cursor.close()
+            return True
+        except mysql.connector.Error as database_error:
+            self.logger.debug(f"Error rebuilding table: {database_error}")
+            return False
+
+    def rebuild_schema(self):
+        """
+        Rebuilds the schema
+        :return: True if successful, False otherwise
+        """
+        try:
+            cursor = self.connection.cursor()
+            cursor.execute("DROP SCHEMA IF EXISTS " + self.credentials.name)
+            cursor.execute("CREATE SCHEMA " + self.credentials.name)
+            cursor.close()
+            return True
+        except mysql.connector.Error as database_error:
+            self.logger.debug(f"Error rebuilding schema: {database_error}")
+            return False
+
+    def drop_schema(self):
+        """
+        Drops the schema
+        :return: True if successful, False otherwise
+        """
+        try:
+            cursor = self.connection.cursor()
+            cursor.execute("DROP SCHEMA IF EXISTS " + self.credentials.name)
+            cursor.close()
+            return True
+        except mysql.connector.Error as database_error:
+            self.logger.debug(f"Error dropping schema: {database_error}")
+            return False
 
     def drop_database(self):
         """
