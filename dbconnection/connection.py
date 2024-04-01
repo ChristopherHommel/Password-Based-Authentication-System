@@ -10,11 +10,13 @@ class Connection:
     """
     Handles Connections and transactions to the database
     """
-
     logger = logging.getLogger(__name__)
     logging.basicConfig()
     logger.setLevel(logging.DEBUG)
-    DATABASE_CONNECTION_FILE = os.getcwd() + "/dbconnection/dbconfig.json"
+
+    real_path = os.path.realpath(__file__)
+    DATABASE_CONNECTION_FILE = os.path.join(os.path.dirname(real_path), "dbconfig.json")
+
     credentials = None
     connection = None
 
@@ -47,6 +49,17 @@ class Connection:
                 port=self.credentials.port,
                 raise_on_warnings=True
             )
+            # Build a new table users if it does not exist with the columns, name, password, salt, test_only
+            cursor = self.connection.cursor()
+            cursor.execute("CREATE TABLE IF NOT EXISTS users (" 
+                           "id INT AUTO_INCREMENT PRIMARY KEY, "
+                           "name VARCHAR(255) NOT NULL, "
+                           "password VARCHAR(255) NOT NULL, "
+                           "salt VARCHAR(255) NOT NULL, "
+                           "test_only BOOLEAN NOT NULL)")
+            cursor.close()
+
+            logging.debug(f"Finished initializing database")
         except mysql.connector.Error as database_error:
             self.logger.debug(f"Error connecting to database: {database_error}")
             return
@@ -65,6 +78,20 @@ class Connection:
         """
         self.connection.close()
         self.logger.debug("Connection closed")
+
+    def drop_database(self):
+        """
+        Drops the database
+        :return: True if successful, False otherwise
+        """
+        try:
+            cursor = self.connection.cursor()
+            cursor.execute("DROP DATABASE IF EXISTS " + self.credentials.name)
+            cursor.close()
+            return True
+        except mysql.connector.Error as database_error:
+            self.logger.debug(f"Error dropping database: {database_error}")
+            return False
 
     def select(self, query):
         """
