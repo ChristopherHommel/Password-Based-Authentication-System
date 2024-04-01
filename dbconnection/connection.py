@@ -46,8 +46,7 @@ class Connection:
                 user=self.credentials.username,
                 password=self.credentials.password,
                 database=self.credentials.name,
-                port=self.credentials.port,
-                raise_on_warnings=True
+                port=self.credentials.port
             )
 
             # Build a new table users if it does not exist with the columns, name, password, salt, test_only

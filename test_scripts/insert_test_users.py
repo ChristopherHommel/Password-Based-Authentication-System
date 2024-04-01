@@ -23,6 +23,7 @@ def insert_test_users(connection):
         with open(TEST_USER_FILE) as file:
             test_users = json.load(file)
             file.close()
+
             for user in test_users:
                 new_user = TestUser(user['name'], user['password'])
                 logger.debug(f"Inserting new test user: {new_user}")
@@ -34,8 +35,8 @@ def insert_test_users(connection):
         cursor.close()
 
 
-    except Exception as database_conenction_error:
-        logger.debug(f"Error connecting to database: {database_conenction_error}")
+    except Exception as error:
+        logger.debug(f"Error connecting to database: {error}")
         return
 
 

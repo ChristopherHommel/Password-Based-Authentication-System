@@ -5,6 +5,7 @@ class TestUser(User):
     """
     Extends User class to represent a user that is used only for testing purposes
     """
+
     def __init__(self, name, password):
         super().__init__(name, password)
         self.test_only = True

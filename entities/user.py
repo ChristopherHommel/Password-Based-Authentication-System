@@ -31,3 +31,19 @@ class User:
 
     def __repr__(self):
         return f"Creating new user({self.name})"
+
+    def set_name(self, name):
+        """
+        Set the name of the user
+        :param name: name of the user
+        :return: None
+        """
+        self.name = name
+
+    def set_password(self, password):
+        """
+        Set the password of the user
+        :param password: password of the user
+        :return: None
+        """
+        self.password = password
