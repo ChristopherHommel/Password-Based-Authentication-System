@@ -29,6 +29,7 @@ class PasswordBuilder:
         self.check_against_weak_password()
         self.check_against_breach_password()
         self.check_min_and_max_length_password()
+        self.check_min_3_repeated_characters()
 
         return self.user
 
@@ -72,3 +73,22 @@ class PasswordBuilder:
         elif len(self.user.password) > self.MAX_LENGTH:
             self.validated[0] = 0
             self.validated[1] = "password is too long."
+
+    def check_min_3_repeated_characters(self):
+        """
+        A password cannot have 3 or more repeated characters.
+        Updates self.validated with the validation result.
+        """
+        count = 1
+
+        for i in range(1, len(self.user.password)):
+            if self.user.password[i] == self.user.password[i - 1]:
+                count += 1
+
+                if count >= 3:
+                    self.validated[0] = 0
+                    self.validated[1] = f"password has 3 or more repeated characters ({self.user.password[i]})."
+                    return
+            else:
+                count = 1
+

@@ -22,5 +22,8 @@ def enrol(user):
     if validated_password.is_validated()[0] == 0:
         return validated_password.is_validated()
 
+    else:
+        return [1, "User has been enrolled successfully", user]
+
 
 
