@@ -25,12 +25,19 @@ def main():
         sys.exit(0)
 
     if sys.argv[1] == "-e" or sys.argv[1] == "--enrolment":
-        found = enrol(steps(), connection)
+        user = steps()
+        user.set_cursor(connection.get_connection_cursor())
+        enrolled_user = enrol(user)
 
     if sys.argv[1] == "-v" or sys.argv[1] == "--verification":
-        user = verify(steps(), connection)
+        user = steps()
+        user.set_cursor(connection.get_connection_cursor())
+        verified_user = verify(user)
 
-    pass
+    if enrolled_user[0] == 0:
+        print(f"{enrolled_user[2].name} has not been enrolled due to error {enrolled_user[1]}")
+    else:
+        print(f"{enrolled_user[2].name} has been enrolled successfully")
 
 
 def usage():

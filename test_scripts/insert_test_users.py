@@ -25,10 +25,10 @@ def insert_test_users(connection):
             file.close()
 
             for user in test_users:
-                new_user = TestUser(user['name'], user['password'])
+                new_user = TestUser(user['name'], user['password'], cursor)
                 logger.debug(f"Inserting new test user: {new_user}")
 
-                new_user.insert(cursor)
+                new_user.insert()
 
                 connection.get_connection().commit()
 

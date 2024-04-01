@@ -1,7 +1,7 @@
 Password-Based-Authentication-System
 
 # Components
-Python, MySQL
+Python 3.7, MySQL
 
 
 # Installation

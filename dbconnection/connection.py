@@ -183,6 +183,13 @@ class Connection:
             self.logger.debug(f"Error inserting data: {database_error}")
             return False
 
+    def get_connection_cursor(self):
+        """
+        Get the connection cursor
+        :return: connection cursor
+        """
+        return self.connection.cursor()
+
     def __repr__(self):
         """
         Print out the database we are working with
