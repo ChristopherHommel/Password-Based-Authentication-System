@@ -30,6 +30,9 @@ class PasswordBuilder:
         self.check_against_breach_password()
         self.check_min_and_max_length_password()
         self.check_min_3_repeated_characters()
+        self.check_password_does_not_equal_username()
+        self.check_user_name_in_password()
+        self.find_sequential_characters()
 
         return self.user
 
@@ -91,4 +94,47 @@ class PasswordBuilder:
                     return
             else:
                 count = 1
+
+    def check_password_does_not_equal_username(self):
+        """
+        Check if the password is the same as the username.
+        Updates self.validated with the validation result.
+        """
+        if self.user.password == self.user.name:
+            self.validated[0] = 0
+            self.validated[1] = "password is the same as the username."
+
+    def check_user_name_in_password(self):
+        """
+        Check if the username is in the password.
+        Updates self.validated with the validation result.
+        """
+        if self.user.name in self.user.password:
+            self.validated[0] = 0
+            self.validated[1] = "password contains the username."
+
+    def find_sequential_characters(self):
+        """
+        Find sequential characters in a password.
+        Updates self.validated with the validation result.
+        """
+        if len(self.user.password) < 3:
+            return
+
+        for i in range(len(self.user.password) - 2):
+            current_char = ord(self.user.password[i])
+            next_char = ord(self.user.password[i + 1])
+            next_next_char = ord(self.user.password[i + 2])
+
+            # Check if the characters are sequentially increasing or decreasing
+            if (next_char == current_char + 1 and next_next_char == next_char + 1) or \
+                    (next_char == current_char - 1 and next_next_char == next_char - 1):
+
+                self.validated[0] = 0
+                self.validated[1] = (f"Password has sequential characters "
+                                     f"({self.user.password[i]}, "
+                                     f"{self.user.password[i + 1]}, "
+                                     f"{self.user.password[i + 2]}).")
+                return
+
 

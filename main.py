@@ -36,7 +36,6 @@ def main():
     #
     # End of command line argument parsing
     #
-    print('enrolled', enrolled_user)
     if enrolled_user[0] == 0:
         print(f"{enrolled_user[2].name} has not been enrolled due to error {enrolled_user[1]}")
     else:

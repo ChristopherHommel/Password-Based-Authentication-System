@@ -29,7 +29,6 @@ class UserNameVerifier:
         self.execute()
 
     def is_validated(self):
-        print("username vlaidation ", self.validated)
         return self.validated
 
     def execute(self):
