@@ -1,0 +1,7 @@
+{
+    "dbHost": "127.0.0.1",
+    "bdName": "password_based_authentication_system",
+    "dbUserName": "root",
+    "dbPassword": "",
+    "dbPort": 3306
+}
