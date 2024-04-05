@@ -14,6 +14,8 @@ logger.setLevel(logging.DEBUG)
 # Set the connection to the database
 connection = connection.Connection()
 
+MAX_LOGIN_ATTEMPTS = 3
+
 def main():
     if len(sys.argv) <= 1 or len(sys.argv) > 2:
         usage()

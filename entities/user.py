@@ -14,6 +14,7 @@ class User:
     logger.setLevel(logging.DEBUG)
 
     salt = bcrypt.gensalt(16)
+    pepper = '88841bc7911fd5bb99a517a2761173ad'
     test_only = False
 
     def __init__(self, name, password, cursor, connection):

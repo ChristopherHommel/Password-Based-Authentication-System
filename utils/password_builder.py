@@ -23,7 +23,7 @@ class PasswordBuilder:
     MATCH_NUMBERS = re.compile(r'[0-9]')
     MATCH_NON_REGULAR = re.compile(r'[^a-zA-Z0-9]')
 
-    PEPPER = '88841bc7911fd5bb99a517a2761173ad'
+
 
     def __init__(self, user):
         self.user = user
@@ -174,15 +174,15 @@ class PasswordBuilder:
         Generate a password hash.
         :return: password hash
         """
-        # Ensure the password and PEPPER are encoded to bytes
-        password = (self.user.password + self.PEPPER).encode('utf-8')
+        # Ensure the password and pepper are encoded to bytes
+        password = (self.user.password + self.user.pepper).encode('utf-8')
 
         # Use the salt directly if it's already a byte string
         salt = self.user.salt
 
         hashed_password = bcrypt.hashpw(password, salt)
 
-        print(hashed_password)
+        #
         # Set the user password to the newly generated hashed password
         #
         self.user.password = hashed_password
