@@ -1,6 +1,8 @@
 import os
 import re
 
+import bcrypt
+
 
 class PasswordBuilder:
     """
@@ -16,12 +18,12 @@ class PasswordBuilder:
     WEAK_PASSWORD_FILE = os.path.join(os.path.dirname(os.path.realpath(__file__)), "weakpasswords.txt")
     BREACHED_PASSWORD_FILE = os.path.join(os.path.dirname(os.path.realpath(__file__)), "breachedpasswords.txt")
 
-    MATCH_UPPERASE = re.compile(r'[A-Z]')
+    MATCH_UPPERCASE = re.compile(r'[A-Z]')
     MATCH_LOWERCASE = re.compile(r'[a-z]')
     MATCH_NUMBERS = re.compile(r'[0-9]')
     MATCH_NON_REGULAR = re.compile(r'[^a-zA-Z0-9]')
 
-
+    PEPPER = '88841bc7911fd5bb99a517a2761173ad'
 
     def __init__(self, user):
         self.user = user
@@ -34,14 +36,15 @@ class PasswordBuilder:
         return self.validated
 
     def execute(self):
-        #self.check_against_weak_password()
-        #self.check_against_breach_password()
-        #self.check_min_and_max_length_password()
-        #self.check_min_3_repeated_characters()
-        #self.check_password_does_not_equal_username()
-        #self.check_user_name_in_password()
-        #self.find_sequential_characters()
-        #self.match_3_of_4_match_cases()
+        # self.check_against_weak_password()
+        # self.check_against_breach_password()
+        # self.check_min_and_max_length_password()
+        # self.check_min_3_repeated_characters()
+        # self.check_password_does_not_equal_username()
+        # self.check_user_name_in_password()
+        # self.find_sequential_characters()
+        # self.match_3_of_4_match_cases()
+        self.generate_password_hash()
 
         return self.user
 
@@ -138,7 +141,6 @@ class PasswordBuilder:
             # Check if the characters are sequentially increasing or decreasing
             if (next_char == current_char + 1 and next_next_char == next_char + 1) or \
                     (next_char == current_char - 1 and next_next_char == next_char - 1):
-
                 self.validated[0] = 0
                 self.validated[1] = (f"Password has sequential characters "
                                      f"({self.user.password[i]}, "
@@ -153,7 +155,7 @@ class PasswordBuilder:
         """
         match_cases = 0
 
-        if self.MATCH_UPPERASE.search(self.user.password):
+        if self.MATCH_UPPERCASE.search(self.user.password):
             match_cases += 1
         if self.MATCH_LOWERCASE.search(self.user.password):
             match_cases += 1
@@ -167,3 +169,20 @@ class PasswordBuilder:
             self.validated[1] = ("password does not match 3 or more combinations of lowercase,"
                                  " uppercase number and special characters.")
 
+    def generate_password_hash(self):
+        """
+        Generate a password hash.
+        :return: password hash
+        """
+        # Ensure the password and PEPPER are encoded to bytes
+        password = (self.user.password + self.PEPPER).encode('utf-8')
+
+        # Use the salt directly if it's already a byte string
+        salt = self.user.salt
+
+        hashed_password = bcrypt.hashpw(password, salt)
+
+        print(hashed_password)
+        # Set the user password to the newly generated hashed password
+        #
+        self.user.password = hashed_password

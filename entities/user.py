@@ -2,6 +2,8 @@ import logging
 import os
 import sqlite3
 
+import bcrypt
+
 
 class User:
     """
@@ -11,7 +13,7 @@ class User:
     logging.basicConfig()
     logger.setLevel(logging.DEBUG)
 
-    salt = os.urandom(16)
+    salt = bcrypt.gensalt(16)
     test_only = False
 
     def __init__(self, name, password, cursor, connection):
