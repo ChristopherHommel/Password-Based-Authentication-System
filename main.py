@@ -16,6 +16,7 @@ connection = connection.Connection()
 
 MAX_LOGIN_ATTEMPTS = 3
 
+
 def main():
     if len(sys.argv) <= 1 or len(sys.argv) > 2:
         usage()
@@ -31,19 +32,21 @@ def main():
         user.set_cursor(connection.get_connection_cursor())
         enrolled_user = enrol(user)
 
+        if enrolled_user[0] == 0:
+            print(f"{enrolled_user[2].name} has not been enrolled due to error {enrolled_user[1]}")
+        else:
+            print(f"{enrolled_user[2].name} has been enrolled successfully")
+
     if sys.argv[1] == "-v" or sys.argv[1] == "--verification":
         user = steps()
         user.set_connection(connection.get_connection())
         user.set_cursor(connection.get_connection_cursor())
         verified_user = verify(user)
 
-    #
-    # End of command line argument parsing
-    #
-    if enrolled_user[0] == 0:
-        print(f"{enrolled_user[2].name} has not been enrolled due to error {enrolled_user[1]}")
-    else:
-        print(f"{enrolled_user[2].name} has been enrolled successfully")
+        if verified_user[0] == 0:
+            print(f"{verified_user[2].name} has not been verified due to {verified_user[1]}")
+        else:
+            print(f"Welcome {verified_user[2].name}")
 
 
 def usage():

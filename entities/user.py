@@ -58,7 +58,7 @@ class User:
             return False
 
     def __repr__(self):
-        return f"Creating new user({self.name})"
+        return f"User({self.name})"
 
     def set_name(self, name):
         """
@@ -91,3 +91,11 @@ class User:
         :return: None
         """
         self.cursor = cursor
+
+    def set_salt(self, salt):
+        """
+        Set the salt of the user
+        :param salt: salt of the user
+        :return: None
+        """
+        self.salt = salt

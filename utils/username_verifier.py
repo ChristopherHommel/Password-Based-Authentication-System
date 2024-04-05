@@ -21,17 +21,21 @@ class UserNameVerifier:
     MIN_LENGTH = 1
     MAX_LENGTH = 255
 
-    def __init__(self, user):
+    def __init__(self, user, enrollment, verification):
         self.user = user
         # To keep track of the current in use User object
         self.validated[2] = self.user
 
-        self.execute()
+        if enrollment:
+            self.execute_enrollment()
+
+        if verification:
+            self.execute_verification()
 
     def is_validated(self):
         return self.validated
 
-    def execute(self):
+    def execute_enrollment(self):
         """
         Call to run all the checks over the username
         :return:
@@ -40,6 +44,18 @@ class UserNameVerifier:
         self.check_profanity()
         self.name_max_and_max_range_check()
         self.username_already_exists()
+
+        return self.validated
+
+    def execute_verification(self):
+        """
+        Call to run all the checks over the username
+        :return:
+        """
+        self.validate_username_characters()
+        self.check_profanity()
+        self.name_max_and_max_range_check()
+        self.username_not_exists()
 
         return self.validated
 
@@ -81,10 +97,17 @@ class UserNameVerifier:
         """
         user = self.user.select()
 
-        # Returns False if not found
-        if not user:
-            pass
-
         if user:
             self.validated[0] = 0
             self.validated[1] = "username already exists."
+
+    def username_not_exists(self):
+        """
+        Check if the username already exists in the database.
+        Updates self.validated with the validation result.
+        """
+        user = self.user.select()
+
+        if not user:
+            self.validated[0] = 0
+            self.validated[1] = "username does not exist."

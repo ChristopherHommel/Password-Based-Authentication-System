@@ -13,8 +13,8 @@ def enrol(user):
     :param , db_connection A connection Object to our database
     :return: validation status
     """
-    validated_username = username_verifier.UserNameVerifier(user)
-    validated_password = password_builder.PasswordBuilder(user)
+    validated_username = username_verifier.UserNameVerifier(user, True, False)
+    validated_password = password_builder.PasswordBuilder(user, True, False)
 
     if validated_username.is_validated()[0] == 0:
         return validated_username.is_validated()
@@ -22,8 +22,9 @@ def enrol(user):
     if validated_password.is_validated()[0] == 0:
         return validated_password.is_validated()
 
-    else:
-        return [1, "User has been enrolled successfully", user]
+    #
+    # Checks have passed we can use the User to update the database
+    #
+    user.insert()
 
-
-
+    return [1, "User has been enrolled successfully", user]

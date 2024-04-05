@@ -3,6 +3,8 @@ import re
 
 import bcrypt
 
+from entities.user import User
+
 
 class PasswordBuilder:
     """
@@ -23,30 +25,37 @@ class PasswordBuilder:
     MATCH_NUMBERS = re.compile(r'[0-9]')
     MATCH_NON_REGULAR = re.compile(r'[^a-zA-Z0-9]')
 
-
-
-    def __init__(self, user):
+    def __init__(self, user, enrollment, verification):
         self.user = user
         # To keep track of the current in use User object
         self.validated[2] = self.user
 
-        self.execute()
+        if enrollment:
+            self.execute_enrollment()
+
+        if verification:
+            self.execute_verification()
 
     def is_validated(self):
         return self.validated
 
-    def execute(self):
-        # self.check_against_weak_password()
-        # self.check_against_breach_password()
-        # self.check_min_and_max_length_password()
-        # self.check_min_3_repeated_characters()
-        # self.check_password_does_not_equal_username()
-        # self.check_user_name_in_password()
-        # self.find_sequential_characters()
-        # self.match_3_of_4_match_cases()
+    def execute_enrollment(self):
+        self.check_against_weak_password()
+        self.check_against_breach_password()
+        self.check_min_and_max_length_password()
+        self.check_min_3_repeated_characters()
+        self.check_password_does_not_equal_username()
+        self.check_user_name_in_password()
+        self.find_sequential_characters()
+        self.match_3_of_4_match_cases()
         self.generate_password_hash()
 
         return self.user
+
+    def execute_verification(self):
+        self.validate_password()
+
+        return self.validated
 
     def check_against_weak_password(self):
         """
@@ -186,3 +195,22 @@ class PasswordBuilder:
         # Set the user password to the newly generated hashed password
         #
         self.user.password = hashed_password
+
+    def validate_password(self):
+        """
+        Query the database and try to rebuild the password with the supplied password in User object
+        :return:
+        """
+        userdb = self.user.select()
+
+        password = (self.user.password + self.user.pepper).encode('utf-8')
+
+        # Use the salt from the database
+        salt = userdb[3]
+
+        hashed_password = bcrypt.hashpw(password, salt)
+
+        if userdb[2] != hashed_password:
+            self.validated[0] = 0
+            self.validated[1] = "password does not match the one in the database."
+

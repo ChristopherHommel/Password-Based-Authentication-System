@@ -33,6 +33,12 @@ class Connection:
                               salt TEXT NOT NULL,
                               test_only BOOLEAN NOT NULL)""")
 
+            #
+            # Print what ever is in the database
+            #
+            cursor.execute("SELECT * FROM users")
+            print(cursor.fetchall())
+
             self.connection.commit()
             cursor.close()
 
@@ -54,7 +60,6 @@ class Connection:
         """
         self.connection.close()
         self.logger.debug("Connection closed")
-
 
     def select(self, query):
         """
