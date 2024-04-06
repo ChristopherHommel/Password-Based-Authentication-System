@@ -11,7 +11,7 @@ class User:
     """
     logger = logging.getLogger(__name__)
     logging.basicConfig()
-    logger.setLevel(logging.DEBUG)
+    logger.setLevel(logging.INFO)
 
     salt = bcrypt.gensalt(16)
     pepper = '88841bc7911fd5bb99a517a2761173ad'

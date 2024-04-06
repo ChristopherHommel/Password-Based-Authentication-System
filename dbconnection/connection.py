@@ -9,7 +9,7 @@ class Connection:
     """
     logger = logging.getLogger(__name__)
     logging.basicConfig()
-    logger.setLevel(logging.DEBUG)
+    logger.setLevel(logging.INFO)
 
     real_path = os.path.realpath(__file__)
     DATABASE_CONNECTION_FILE = os.path.join(os.path.dirname(real_path), "database.db")
@@ -32,12 +32,6 @@ class Connection:
                               password TEXT NOT NULL,
                               salt TEXT NOT NULL,
                               test_only BOOLEAN NOT NULL)""")
-
-            #
-            # Print what ever is in the database
-            #
-            cursor.execute("SELECT * FROM users")
-            print(cursor.fetchall())
 
             self.connection.commit()
             cursor.close()

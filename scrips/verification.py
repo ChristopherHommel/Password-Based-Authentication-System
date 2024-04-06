@@ -3,7 +3,7 @@ from utils import password_builder, username_verifier
 
 logger = logging.getLogger(__name__)
 logging.basicConfig()
-logger.setLevel(logging.DEBUG)
+logger.setLevel(logging.INFO)
 
 
 def verify(user):

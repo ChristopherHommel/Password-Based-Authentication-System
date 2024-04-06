@@ -3,7 +3,7 @@ from entities.user import User
 
 logger = logging.getLogger(__name__)
 logging.basicConfig()
-logger.setLevel(logging.DEBUG)
+logger.setLevel(logging.INFO)
 
 def steps():
     """

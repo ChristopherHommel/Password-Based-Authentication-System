@@ -9,12 +9,10 @@ import sys
 # Set up the logger
 logger = logging.getLogger(__name__)
 logging.basicConfig()
-logger.setLevel(logging.DEBUG)
+logger.setLevel(logging.INFO)
 
 # Set the connection to the database
 connection = connection.Connection()
-
-MAX_LOGIN_ATTEMPTS = 3
 
 
 def main():
