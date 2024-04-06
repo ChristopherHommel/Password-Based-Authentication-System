@@ -24,7 +24,7 @@ def main():
         usage()
         sys.exit(0)
 
-    if sys.argv[1] == "-e" or sys.argv[1] == "--enrolment":
+    if sys.argv[1] == "-e" or sys.argv[1] == "--enrollment":
         user = steps()
         user.set_connection(connection.get_connection())
         user.set_cursor(connection.get_connection_cursor())
